@@ -25,6 +25,9 @@
 		})
 		schedule.months = transformedData
 		selectedMonth = schedule.months[new Date().getMonth()];
+		console.log({
+			selectedMonth
+		})
 	});
 </script>
 
@@ -64,7 +67,7 @@
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-gray-200">
-						{#each selectedMonth.schedule as time}
+						{#each selectedMonth.schedules as time}
 							<tr class="hover:bg-gray-50 transition-colors">
 								<td class="px-4 py-3 font-medium text-gray-900">
 									{time.date}

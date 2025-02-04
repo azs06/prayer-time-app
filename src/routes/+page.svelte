@@ -1,17 +1,38 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { schedule } from '../data/schedule';
-	schedule.year = new Date().getFullYear();
-	let selectedMonth = schedule.months[new Date().getMonth()];
+	const year = new Date().getFullYear();
+	let selectedMonth = {};
 	const setSelectedMonth = (month) => {
-    selectedMonth = month;
-  };
+		selectedMonth = month;
+	};
+	const CALENDAR_API_URL = import.meta.env.VITE_API_URL + 'permanent-prayer-times';
+	const fetchPrayerTimes = async () => {
+		const response = await fetch(CALENDAR_API_URL);
+		const data = await response.json();
+		if (response.ok) {
+			return data;
+		}
+		return Promise.reject('Failed to load data');
+	};
+	onMount(async () => {
+		const data = await fetchPrayerTimes();
+		const transformedData = data.map((month) => {
+			return {
+				...month,
+				name: month.monthName
+			}
+		})
+		schedule.months = transformedData
+		selectedMonth = schedule.months[new Date().getMonth()];
+	});
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
 	<div class="max-w-7xl mx-auto">
 		<div class="text-center mb-8">
 			<h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
-				Prayer Schedule {schedule.year}
+				Prayer Schedule {year}
 			</h1>
 			<div class="flex flex-wrap justify-center gap-2 mt-4">
 				{#each schedule.months as month}
@@ -43,20 +64,21 @@
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-gray-200">
-            {#each selectedMonth.schedule  as time }
-            <tr class="hover:bg-gray-50 transition-colors">
-              <td class="px-4 py-3 font-medium text-gray-900">
-                {time.date} {selectedMonth.name}
-              </td>
-              <td class="px-4 py-3 text-gray-700">{time.sehri}</td>
-              <td class="px-4 py-3 text-gray-700">{time.fazr}</td>
-              <td class="px-4 py-3 text-gray-700">{time.sunrise}</td>
-              <td class="px-4 py-3 text-gray-700">{time.juhoor}</td>
-              <td class="px-4 py-3 text-gray-700">{time.asr}</td>
-              <td class="px-4 py-3 text-gray-700">{time.magrib_iftar}</td>
-              <td class="px-4 py-3 text-gray-700">{time.isha}</td>
-            </tr>
-            {/each}
+						{#each selectedMonth.schedule as time}
+							<tr class="hover:bg-gray-50 transition-colors">
+								<td class="px-4 py-3 font-medium text-gray-900">
+									{time.date}
+									{selectedMonth.name}
+								</td>
+								<td class="px-4 py-3 text-gray-700">{time.sehri}</td>
+								<td class="px-4 py-3 text-gray-700">{time.fazr}</td>
+								<td class="px-4 py-3 text-gray-700">{time.sunrise}</td>
+								<td class="px-4 py-3 text-gray-700">{time.juhoor}</td>
+								<td class="px-4 py-3 text-gray-700">{time.asr}</td>
+								<td class="px-4 py-3 text-gray-700">{time.magrib_iftar}</td>
+								<td class="px-4 py-3 text-gray-700">{time.isha}</td>
+							</tr>
+						{/each}
 					</tbody>
 				</table>
 			</div>

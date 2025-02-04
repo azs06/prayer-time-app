@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { schedule } from '../data/schedule';
+	import PrayerCard from '../components/PrayerCard.svelte';
 
 	const year = new Date().getFullYear();
 	let selectedMonth = $state({});
@@ -21,6 +22,18 @@
 		selectedMonth = month;
 	};
 
+	let todaysPrayerTimes = $derived.by(() => {
+		const today = new Date();
+		const date = today.getDate();
+		const currentMonth = calendar.months[new Date().getMonth()];
+		if (!currentMonth || !currentMonth.schedules) {
+			return {};
+		}
+		return currentMonth.schedules.find((sch) => {
+			return sch.date == date;
+		});
+	});
+
 	onMount(async () => {
 		const data = await fetchPrayerTimes();
 		const transformedData = data.map((month) => {
@@ -36,6 +49,9 @@
 
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
 	<div class="max-w-7xl mx-auto">
+		<div class="text-center mb-8">
+			<PrayerCard prayerTime={todaysPrayerTimes}></PrayerCard>
+		</div>
 		<div class="text-center mb-8">
 			<h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
 				Prayer Schedule {year}

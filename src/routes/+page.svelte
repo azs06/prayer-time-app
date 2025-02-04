@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { schedule } from '../data/schedule';
+
 	const year = new Date().getFullYear();
-	let selectedMonth = {};
-	const setSelectedMonth = (month) => {
-		selectedMonth = month;
-	};
+	let selectedMonth = $state({});
+	let calendar = $state({ ...schedule });
+
 	const CALENDAR_API_URL = import.meta.env.VITE_API_URL + 'permanent-prayer-times';
+
 	const fetchPrayerTimes = async () => {
 		const response = await fetch(CALENDAR_API_URL);
 		const data = await response.json();
@@ -15,19 +16,21 @@
 		}
 		return Promise.reject('Failed to load data');
 	};
+
+	const setSelectedMonth = (month) => {
+		selectedMonth = month;
+	};
+
 	onMount(async () => {
 		const data = await fetchPrayerTimes();
 		const transformedData = data.map((month) => {
 			return {
 				...month,
 				name: month.monthName
-			}
-		})
-		schedule.months = transformedData
-		selectedMonth = schedule.months[new Date().getMonth()];
-		console.log({
-			selectedMonth
-		})
+			};
+		});
+		calendar.months = transformedData;
+		selectedMonth = calendar.months[new Date().getMonth()];
 	});
 </script>
 
@@ -38,8 +41,9 @@
 				Prayer Schedule {year}
 			</h1>
 			<div class="flex flex-wrap justify-center gap-2 mt-4">
-				{#each schedule.months as month}
+				{#each calendar.months as month}
 					<button
+						onclick={() => setSelectedMonth(month)}
 						class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
           ${
 						selectedMonth.name === month.name

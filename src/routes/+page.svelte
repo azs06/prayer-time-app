@@ -1,50 +1,35 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { schedule } from '../data/schedule';
 	import PrayerCard from '../components/PrayerCard.svelte';
+	import { page } from '$app/stores';
 
-	const year = new Date().getFullYear();
-	let selectedMonth = $state({});
-	let calendar = $state({ ...schedule });
+	const today = new Date();
+	const year = today.getFullYear();
 
-	const CALENDAR_API_URL = import.meta.env.VITE_API_URL + 'permanent-prayer-times';
+	let selectedMonth;
+	let todaysPrayerTimes;
+	
+	let calendar = { ...schedule };
 
-	const fetchPrayerTimes = async () => {
-		const response = await fetch(CALENDAR_API_URL);
-		const data = await response.json();
-		if (response.ok) {
-			return data;
+	$: if ($page.data.prayerSchedule) {
+		calendar.months = $page.data.prayerSchedule;
+		selectedMonth = calendar.months[new Date().getMonth()];
+	}
+
+
+	$: {
+		const today = new Date();
+		const date = today.getDate();
+		const currentMonth = calendar.months[new Date().getMonth()];
+		if (currentMonth && currentMonth.schedules) {
+			todaysPrayerTimes = currentMonth.schedules.find((sch) => sch.date == date);
 		}
-		return Promise.reject('Failed to load data');
-	};
+	}
 
 	const setSelectedMonth = (month) => {
 		selectedMonth = month;
 	};
 
-	let todaysPrayerTimes = $derived.by(() => {
-		const today = new Date();
-		const date = today.getDate();
-		const currentMonth = calendar.months[new Date().getMonth()];
-		if (!currentMonth || !currentMonth.schedules) {
-			return {};
-		}
-		return currentMonth.schedules.find((sch) => {
-			return sch.date == date;
-		});
-	});
-
-	onMount(async () => {
-		const data = await fetchPrayerTimes();
-		const transformedData = data.map((month) => {
-			return {
-				...month,
-				name: month.monthName
-			};
-		});
-		calendar.months = transformedData;
-		selectedMonth = calendar.months[new Date().getMonth()];
-	});
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
@@ -62,10 +47,10 @@
 						onclick={() => setSelectedMonth(month)}
 						class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
           ${
-						selectedMonth.name === month.name
+						selectedMonth.monthName === month.monthName
 							? 'bg-indigo-600 text-white'
 							: 'bg-white text-gray-700 hover:bg-indigo-50'
-					}`}>{month.name}</button
+					}`}>{month.monthName}</button
 					>
 				{/each}
 			</div>
@@ -88,10 +73,10 @@
 					</thead>
 					<tbody class="divide-y divide-gray-200">
 						{#each selectedMonth.schedules as time}
-							<tr class="hover:bg-gray-50 transition-colors">
+							<tr class="hover:bg-gray-50 transition-colors {time.date == today.getDate() ? 'bg-blue-500': ''}">
 								<td class="px-4 py-3 font-medium text-gray-900">
 									{time.date}
-									{selectedMonth.name}
+									{selectedMonth.monthName}
 								</td>
 								<td class="px-4 py-3 text-gray-700">{time.sehri}</td>
 								<td class="px-4 py-3 text-gray-700">{time.fazr}</td>

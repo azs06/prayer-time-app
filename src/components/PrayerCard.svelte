@@ -29,7 +29,7 @@
 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
 	<div class="bg-indigo-600 px-6 py-4">
 		<div class="flex items-center gap-2">
-			<Clock className="w-6 h-6 text-indigo-100" />
+			<Clock className="w-6 h-6" />
 		</div>
 	</div>
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">

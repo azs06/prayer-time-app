@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { schedule } from '../data/schedule';
 	import PrayerCard from '../components/PrayerCard.svelte';
 	import SelectDistrict from '../components/SelectDistrict.svelte';
 	import { page } from '$app/state';
@@ -7,26 +6,26 @@
 	const today = new Date();
 	const year = today.getFullYear();
 
-	
+
 	let districts = $derived.by(() => {
-		if(page.data.districts) return page.data.districts;
+		if (page.data.districts) return page.data.districts;
 		return [];
-	})
+	});
 
 	let calendar = $derived.by(() => {
-		if(page.data.prayerSchedule) return page.data.prayerSchedule;
+		if (page.data.prayerSchedule) return page.data.prayerSchedule;
 		return [];
-	})
+	});
 
 	let selectedMonth = $state(() => {
-		return calendar?.months[new Date().getMonth()]
-	})
+		return calendar[new Date().getMonth()];
+	});
 
 	let todaysPrayerTimes = $derived.by(() => {
 		const today = new Date();
 		const date = today.getDate();
 		const monthIndex = new Date().getMonth();
-		const currentMonth = calendar && calendar?.months ? calendar.months[monthIndex] :undefined
+		const currentMonth = calendar ? calendar[monthIndex] : undefined;
 		if (currentMonth && currentMonth.schedules) {
 			return currentMonth.schedules.find((sch) => sch.date == date);
 		}
@@ -55,12 +54,12 @@
 				Prayer Schedule {year}
 			</h1>
 			<div class="flex flex-wrap justify-center gap-2 mt-4">
-				{#each calendar.months as month}
+				{#each calendar as month}
 					<button
 						onclick={() => setSelectedMonth(month)}
 						class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
           ${
-						selectedMonth.monthName === month.monthName
+						selectedMonth()?.monthName === month.monthName
 							? 'bg-indigo-600 text-white'
 							: 'bg-white text-gray-700 hover:bg-indigo-50'
 					}`}>{month.monthName}</button
@@ -85,7 +84,7 @@
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-gray-200">
-						{#each selectedMonth.schedules as time}
+						{#each selectedMonth()?.schedules as time}
 							<tr
 								class="hover:bg-gray-50 transition-colors {time.date == today.getDate()
 									? 'bg-blue-500'
@@ -93,7 +92,7 @@
 							>
 								<td class="px-4 py-3 font-medium text-gray-900">
 									{time.date}
-									{selectedMonth.monthName}
+									{selectedMonth()?.monthName}
 								</td>
 								<td class="px-4 py-3 text-gray-700">{time.sehri}</td>
 								<td class="px-4 py-3 text-gray-700">{time.fazr}</td>

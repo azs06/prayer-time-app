@@ -1,39 +1,52 @@
 <script lang="ts">
 	import { schedule } from '../data/schedule';
 	import PrayerCard from '../components/PrayerCard.svelte';
-	import { page } from '$app/stores';
+	import SelectDistrict from '../components/SelectDistrict.svelte';
+	import { page } from '$app/state';
 
 	const today = new Date();
 	const year = today.getFullYear();
 
-	let selectedMonth;
-	let todaysPrayerTimes;
 	
-	let calendar = { ...schedule };
+	let districts = $derived.by(() => {
+		if(page.data.districts) return page.data.districts;
+		return [];
+	})
 
-	$: if ($page.data.prayerSchedule) {
-		calendar.months = $page.data.prayerSchedule;
-		selectedMonth = calendar.months[new Date().getMonth()];
-	}
+	let calendar = $derived.by(() => {
+		if(page.data.prayerSchedule) return page.data.prayerSchedule;
+		return [];
+	})
 
+	let selectedMonth = $state(() => {
+		return calendar?.months[new Date().getMonth()]
+	})
 
-	$: {
+	let todaysPrayerTimes = $derived.by(() => {
 		const today = new Date();
 		const date = today.getDate();
-		const currentMonth = calendar.months[new Date().getMonth()];
+		const monthIndex = new Date().getMonth();
+		const currentMonth = calendar && calendar?.months ? calendar.months[monthIndex] :undefined
 		if (currentMonth && currentMonth.schedules) {
-			todaysPrayerTimes = currentMonth.schedules.find((sch) => sch.date == date);
+			return currentMonth.schedules.find((sch) => sch.date == date);
 		}
-	}
+		return {};
+	});
 
 	const setSelectedMonth = (month) => {
 		selectedMonth = month;
 	};
 
+	const updateDistrict = (selectedDistrict) => {
+		console.log({ selectedDistrict });
+	};
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
 	<div class="max-w-7xl mx-auto">
+		<div class="text-center mb-8">
+			<SelectDistrict {districts} {updateDistrict}></SelectDistrict>
+		</div>
 		<div class="text-center mb-8">
 			<PrayerCard prayerTime={todaysPrayerTimes}></PrayerCard>
 		</div>
@@ -73,7 +86,11 @@
 					</thead>
 					<tbody class="divide-y divide-gray-200">
 						{#each selectedMonth.schedules as time}
-							<tr class="hover:bg-gray-50 transition-colors {time.date == today.getDate() ? 'bg-blue-500': ''}">
+							<tr
+								class="hover:bg-gray-50 transition-colors {time.date == today.getDate()
+									? 'bg-blue-500'
+									: ''}"
+							>
 								<td class="px-4 py-3 font-medium text-gray-900">
 									{time.date}
 									{selectedMonth.monthName}

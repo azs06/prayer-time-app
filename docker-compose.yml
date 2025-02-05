@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  prayer-time-app:
+    image: prayer-time-app
+    build: .
+    ports:
+      - "8787:80"
+    restart: unless-stopped

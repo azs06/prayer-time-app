@@ -64,12 +64,16 @@
 				if (adjustments) {
 					const sehri = adjustTime(prayerTime.sehri, adjustments.suhoor);
 					const magrib_iftar = adjustTime(prayerTime.magrib_iftar, adjustments.iftar);
+					const asor = adjustTime(prayerTime.asor, adjustments.suhoor);
 					const sunrise = adjustTime(prayerTime.sunrise, adjustments.suhoor);
+					const isha = adjustTime(prayerTime.isha, adjustments.magrib_iftar);
 					prayerTime = {
 						...prayerTime,
 						sehri,
 						magrib_iftar,
-						sunrise
+						sunrise,
+						asor,
+						isha
 					}
 				}
 			}

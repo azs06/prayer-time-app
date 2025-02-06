@@ -2,6 +2,7 @@
 	import PrayerCard from '../components/PrayerCard.svelte';
 	import SelectDistrict from '../components/SelectDistrict.svelte';
 	import { page } from '$app/state';
+	import { Key } from 'lucide-svelte';
 
 	const today = new Date();
 	const year = today.getFullYear();
@@ -11,15 +12,18 @@
 		return [];
 	});
 
-	let selectedDistrict = $state(() => {
+	let defaultDistrict = $state(() => {
 		if (page.data.districts) {
 			return page.data.districts.find((district) => {
 				return district?.name == 'Dhaka';
 			});
 		}
-		return null;
+		return {};
 	});
 
+	let selectedDistrict = $state.raw({
+		...defaultDistrict()
+	});
 
 	let calendar = $derived.by(() => {
 		if (page.data.prayerSchedule) return page.data.prayerSchedule;
@@ -30,15 +34,47 @@
 		return calendar[new Date().getMonth()];
 	});
 
-	let todaysPrayerTimes = $derived.by(() => {
-		const today = new Date();
-		const date = today.getDate();
-		const monthIndex = new Date().getMonth();
-		const currentMonth = calendar ? calendar[monthIndex] : undefined;
-		if (currentMonth && currentMonth.schedules) {
-			return currentMonth.schedules.find((sch) => sch.date == date);
+	const adjustTime = (timeString, minutes) => {
+		const [time, amPm] = timeString.split(' ');
+		let [hour, minute] = time.split(':').map(Number);
+
+		// Convert PM times to 24-hour format
+		if (amPm === 'PM' && hour !== 12) {
+			hour += 12;
 		}
-		return {};
+		if (amPm === 'AM' && hour === 12) {
+			hour = 0; // Midnight case
+		}
+
+		const date = new Date();
+		date.setHours(hour);
+		date.setMinutes(minute + minutes);
+
+		return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+	};
+
+	let todaysPrayerTimes = $derived.by(() => {
+		let prayerTime;
+		const date = new Date().getDate();
+		const currentMonth = calendar ? calendar[new Date().getMonth()] : undefined;
+		if (currentMonth && currentMonth.schedules) {
+			prayerTime = currentMonth.schedules.find((sch) => sch.date == date);
+			if (selectedDistrict !== null) {
+				const adjustments = selectedDistrict?.adjustments;
+				if (adjustments) {
+					const sehri = adjustTime(prayerTime.sehri, adjustments.suhoor);
+					const magrib_iftar = adjustTime(prayerTime.magrib_iftar, adjustments.iftar);
+					const sunrise = adjustTime(prayerTime.sunrise, adjustments.suhoor);
+					prayerTime = {
+						...prayerTime,
+						sehri,
+						magrib_iftar,
+						sunrise
+					}
+				}
+			}
+		}
+		return prayerTime;
 	});
 
 	const setSelectedMonth = (month) => {
@@ -46,14 +82,14 @@
 	};
 
 	const updateDistrict = (district) => {
-		selectedDistrict = district;
+		selectedDistrict = { ...district };
 	};
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
 	<div class="max-w-7xl mx-auto">
 		<div class="text-center mb-8">
-			<SelectDistrict {districts} {updateDistrict} selectedDistrict={selectedDistrict()}></SelectDistrict>
+			<SelectDistrict {districts} {updateDistrict} {selectedDistrict}></SelectDistrict>
 		</div>
 		<div class="text-center mb-8">
 			<PrayerCard prayerTime={todaysPrayerTimes}></PrayerCard>

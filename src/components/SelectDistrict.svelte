@@ -6,9 +6,9 @@
 	); // Default to first district
 
 	function handleSelect(event: InputEvent) {
-		selectedDistrict = districts.find((d) => d.name === event?.target?.value);
+		let data = districts.find((d) => d.name === event?.target?.value);
 		if (typeof updateDistrict === 'function') {
-			updateDistrict(selectedDistrict);
+			updateDistrict(data);
 		}
 	}
 </script>

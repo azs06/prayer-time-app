@@ -6,11 +6,20 @@
 	const today = new Date();
 	const year = today.getFullYear();
 
-
 	let districts = $derived.by(() => {
 		if (page.data.districts) return page.data.districts;
 		return [];
 	});
+
+	let selectedDistrict = $state(() => {
+		if (page.data.districts) {
+			return page.data.districts.find((district) => {
+				return district?.name == 'Dhaka';
+			});
+		}
+		return null;
+	});
+
 
 	let calendar = $derived.by(() => {
 		if (page.data.prayerSchedule) return page.data.prayerSchedule;
@@ -36,15 +45,15 @@
 		selectedMonth = month;
 	};
 
-	const updateDistrict = (selectedDistrict) => {
-		console.log({ selectedDistrict });
+	const updateDistrict = (district) => {
+		selectedDistrict = district;
 	};
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
 	<div class="max-w-7xl mx-auto">
 		<div class="text-center mb-8">
-			<SelectDistrict {districts} {updateDistrict}></SelectDistrict>
+			<SelectDistrict {districts} {updateDistrict} selectedDistrict={selectedDistrict()}></SelectDistrict>
 		</div>
 		<div class="text-center mb-8">
 			<PrayerCard prayerTime={todaysPrayerTimes}></PrayerCard>

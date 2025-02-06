@@ -1,7 +1,9 @@
 <script lang="ts">
-	let { districts = [], updateDistrict } = $props();
+	let { districts = [], updateDistrict, selectedDistrict } = $props();
 
-	let selectedDistrict = $state(districts?.length > 0 ? districts[0] : null); // Default to first district
+	let slectedDistrictState = $state(
+		selectedDistrict || (districts?.length > 0 ? districts[0] : null)
+	); // Default to first district
 
 	function handleSelect(event: InputEvent) {
 		selectedDistrict = districts.find((d) => d.name === event?.target?.value);
@@ -19,7 +21,7 @@
 		class="w-full p-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
 	>
 		{#each districts as district}
-			<option value={district.name} selected={district.name === selectedDistrict?.name}>
+			<option value={district.name} selected={district.name === slectedDistrictState?.name}>
 				{district.name} ({district.bengali_name})
 			</option>
 		{/each}

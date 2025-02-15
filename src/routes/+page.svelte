@@ -2,7 +2,6 @@
 	import PrayerCard from '../components/PrayerCard.svelte';
 	import SelectDistrict from '../components/SelectDistrict.svelte';
 	import { page } from '$app/state';
-	import { Key } from 'lucide-svelte';
 
 	const today = new Date();
 	const year = today.getFullYear();

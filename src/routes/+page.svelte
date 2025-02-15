@@ -35,6 +35,7 @@
 	});
 
 	const adjustTime = (timeString, minutes) => {
+		if (!timeString || !minutes) return '';
 		const [time, amPm] = timeString.split(' ');
 		let [hour, minute] = time.split(':').map(Number);
 
@@ -74,7 +75,7 @@
 						sunrise,
 						asor,
 						isha
-					}
+					};
 				}
 			}
 		}

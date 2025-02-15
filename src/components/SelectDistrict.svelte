@@ -1,9 +1,12 @@
 <script lang="ts">
 	let { districts = [], updateDistrict, selectedDistrict } = $props();
 
-	let slectedDistrictState = $state(
-		selectedDistrict || (districts?.length > 0 ? districts[0] : null)
-	); // Default to first district
+	let slectedDistrictState = $state(districts[0]);
+	$effect(() => {
+		if(selectedDistrict){
+			slectedDistrictState = {...selectedDistrict}
+		}
+	})
 
 	function handleSelect(event: InputEvent) {
 		let data = districts.find((d) => d.name === event?.target?.value);

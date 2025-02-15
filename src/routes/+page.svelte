@@ -14,7 +14,7 @@
 		return [];
 	});
 
-	let defaultDistrict = $state(() => {
+	let defaultDistrict = $derived.by(() => {
 		if (page.data.districts) {
 			return page.data.districts.find((district) => {
 				return district?.name == 'Dhaka';
@@ -23,11 +23,7 @@
 		return {};
 	});
 
-	let selectedDistrict = $state.raw(() => {
-		return {
-			...defaultDistrict
-		};
-	});
+	let selectedDistrict = $state.raw({});
 
 	let calendar = $derived.by(() => {
 		if (page.data.prayerSchedule) return page.data.prayerSchedule;
@@ -87,6 +83,7 @@
 
 	$effect(() => {
 		setSelectedMonth(calendar[new Date().getMonth()]);
+		updateDistrict(defaultDistrict);
 	});
 
 	const setSelectedMonth = (month) => {
@@ -102,7 +99,10 @@
 	const isActiveDate = (monthDate, selectedMonth) => {
 		const month = selectedMonth.monthName;
 		const currentDate = today.toLocaleString('default', { month: 'long', day: 'numeric' });
-		const activeDate = new Date(`${month} ${monthDate.date} ${today.getFullYear()}`).toLocaleString('default', { month: 'long', day: 'numeric' });
+		const activeDate = new Date(`${month} ${monthDate.date} ${today.getFullYear()}`).toLocaleString(
+			'default',
+			{ month: 'long', day: 'numeric' }
+		);
 		return currentDate == activeDate;
 	};
 </script>
@@ -110,7 +110,7 @@
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
 	<div class="max-w-7xl mx-auto">
 		<div class="text-center mb-8">
-			<!-- <SelectDistrict {districts} {updateDistrict} {selectedDistrict}></SelectDistrict> -->
+			<SelectDistrict {districts} {updateDistrict} {selectedDistrict}></SelectDistrict>
 		</div>
 		<div class="text-center mb-8">
 			<!-- <PrayerCard prayerTime={todaysPrayerTimes}></PrayerCard> -->

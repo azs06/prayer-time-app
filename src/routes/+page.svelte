@@ -5,6 +5,9 @@
 
 	const today = new Date();
 	const year = today.getFullYear();
+	$effect(() => {
+		console.log({ today });
+	});
 
 	let districts = $derived.by(() => {
 		if (page.data.districts) return page.data.districts;
@@ -95,6 +98,13 @@
 	const updateDistrict = (district) => {
 		selectedDistrict = { ...district };
 	};
+
+	const isActiveDate = (monthDate, selectedMonth) => {
+		const month = selectedMonth.monthName;
+		const currentDate = today.toLocaleString('default', { month: 'long', day: 'numeric' });
+		const activeDate = new Date(`${month} ${monthDate.date} ${today.getFullYear()}`).toLocaleString('default', { month: 'long', day: 'numeric' });
+		return currentDate == activeDate;
+	};
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
@@ -142,8 +152,8 @@
 					<tbody class="divide-y divide-gray-200">
 						{#each selectedMonth?.schedules as time}
 							<tr
-								class="hover:bg-gray-50 transition-colors {time.date == today.getDate()
-									? 'bg-blue-500'
+								class="hover:bg-gray-50 transition-colors {isActiveDate(time, selectedMonth)
+									? 'bg-blue-600 text-white'
 									: ''}"
 							>
 								<td class="px-4 py-3 font-medium text-gray-900">

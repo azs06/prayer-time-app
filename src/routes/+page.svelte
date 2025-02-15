@@ -20,8 +20,10 @@
 		return {};
 	});
 
-	let selectedDistrict = $state.raw({
-		...defaultDistrict()
+	let selectedDistrict = $state.raw(() => {
+		return {
+			...defaultDistrict
+		};
 	});
 
 	let calendar = $derived.by(() => {
@@ -29,12 +31,12 @@
 		return [];
 	});
 
-	let selectedMonth = $state(() => {
+	let selectedMonth = $state.raw(() => {
 		return calendar[new Date().getMonth()];
 	});
 
 	const adjustTime = (timeString, minutes) => {
-		if (!timeString || !minutes) return '';
+		if (!timeString) return timeString;
 		const [time, amPm] = timeString.split(' ');
 		let [hour, minute] = time.split(':').map(Number);
 
@@ -53,12 +55,11 @@
 		return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 	};
 
-	let todaysPrayerTimes = $derived.by(() => {
+	/* let todaysPrayerTimes = $derived.by(() => {
 		let prayerTime;
 		const date = new Date().getDate();
-		const currentMonth = calendar ? calendar[new Date().getMonth()] : undefined;
-		if (currentMonth && currentMonth.schedules) {
-			prayerTime = currentMonth.schedules.find((sch) => sch.date == date);
+		if (selectedMonth() && selectedMonth().schedules) {
+			prayerTime = selectedMonth().schedules.find((sch) => sch.date == date);
 			if (selectedDistrict !== null) {
 				const adjustments = selectedDistrict?.adjustments;
 				if (adjustments) {
@@ -79,10 +80,16 @@
 			}
 		}
 		return prayerTime;
+	}); */
+
+	$effect(() => {
+		setSelectedMonth(calendar[new Date().getMonth()]);
 	});
 
 	const setSelectedMonth = (month) => {
-		selectedMonth = month;
+		selectedMonth = {
+			...month
+		};
 	};
 
 	const updateDistrict = (district) => {
@@ -93,10 +100,10 @@
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
 	<div class="max-w-7xl mx-auto">
 		<div class="text-center mb-8">
-			<SelectDistrict {districts} {updateDistrict} {selectedDistrict}></SelectDistrict>
+			<!-- <SelectDistrict {districts} {updateDistrict} {selectedDistrict}></SelectDistrict> -->
 		</div>
 		<div class="text-center mb-8">
-			<PrayerCard prayerTime={todaysPrayerTimes}></PrayerCard>
+			<!-- <PrayerCard prayerTime={todaysPrayerTimes}></PrayerCard> -->
 		</div>
 		<div class="text-center mb-8">
 			<h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
@@ -108,7 +115,7 @@
 						onclick={() => setSelectedMonth(month)}
 						class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
           ${
-						selectedMonth()?.monthName === month.monthName
+						selectedMonth?.monthName === month.monthName
 							? 'bg-indigo-600 text-white'
 							: 'bg-white text-gray-700 hover:bg-indigo-50'
 					}`}>{month.monthName}</button
@@ -133,7 +140,7 @@
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-gray-200">
-						{#each selectedMonth()?.schedules as time}
+						{#each selectedMonth?.schedules as time}
 							<tr
 								class="hover:bg-gray-50 transition-colors {time.date == today.getDate()
 									? 'bg-blue-500'
@@ -141,7 +148,7 @@
 							>
 								<td class="px-4 py-3 font-medium text-gray-900">
 									{time.date}
-									{selectedMonth()?.monthName}
+									{selectedMonth?.monthName}
 								</td>
 								<td class="px-4 py-3 text-gray-700">{time.sehri}</td>
 								<td class="px-4 py-3 text-gray-700">{time.fazr}</td>

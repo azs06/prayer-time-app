@@ -127,9 +127,9 @@
 			<PrayerCard prayerTime={getTodaysPrayerTimes()}></PrayerCard>
 		</div>
 		<div class="text-center mb-8">
-			<h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
+			<h3 class="text-2xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
 				Prayer Schedule {year}
-			</h1>
+			</h3>
 			<div class="flex flex-wrap justify-center gap-2 mt-4">
 				{#each calendar as month}
 					<button

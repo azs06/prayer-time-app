@@ -5,7 +5,6 @@
 	import lang from '../lang/lang.json';
 
 	const today = new Date();
-	const year = today.getFullYear();
 
 	let districts = $derived.by(() => {
 		if (page.data.districts) return page.data.districts;
@@ -54,9 +53,8 @@
 
 	const getTodaysPrayerTimes = () => {
 		const today = new Date().getDate();
-		const { adjustments } = selectedDistrict;
-		const currentMonth = calendar[new Date().getMonth()]
-		const { schedules } = currentMonth;
+		const currentMonth = calendar[new Date().getMonth()];
+		const schedules = currentMonth?.schedules;
 
 		const prayerTime = schedules?.find((schedule) => {
 			return today == schedule.date;
@@ -64,6 +62,7 @@
 		if (prayerTime) {
 			let adjustedPrayerTime = {};
 			Object.keys(prayerTime).forEach((key) => {
+				const value = prayerTime[key];
 				adjustedPrayerTime[key] = renderAdjustedTime(prayerTime[key], key);
 			});
 			return adjustedPrayerTime;
@@ -97,6 +96,7 @@
 	};
 	const renderAdjustedTime = (time, timeOf) => {
 		const { adjustments } = selectedDistrict;
+		if (!adjustments) return time;
 		switch (timeOf) {
 			case 'sehri':
 				return adjustTime(time, adjustments.suhoor);

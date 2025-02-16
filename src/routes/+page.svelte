@@ -53,9 +53,11 @@
 	};
 
 	const getTodaysPrayerTimes = () => {
-		const { adjustments } = selectedDistrict;
-		const { schedules } = selectedMonth;
 		const today = new Date().getDate();
+		const { adjustments } = selectedDistrict;
+		const currentMonth = calendar[new Date().getMonth()]
+		const { schedules } = currentMonth;
+
 		const prayerTime = schedules?.find((schedule) => {
 			return today == schedule.date;
 		});

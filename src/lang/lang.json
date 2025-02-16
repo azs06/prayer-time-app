@@ -1,0 +1,156 @@
+{
+	"primaryHeading": {
+		"en": "Prayer Times",
+		"bn": "নামাজের সময়সূচি"
+	},
+	"cardHeading": {
+		"en": "Today's Prayer Schedule",
+		"bn": "আজকের নামাজের সময়সূচি"
+	},
+	"prayerSchedule": {
+		"en": "Prayer Schedule",
+		"bn": "নামাজের সময়সূচি"
+	},
+	"prayerTime": {
+		"sehri": {
+			"en": "Sehri",
+			"bn": "সেহরি"
+		},
+		"fazr": {
+			"en": "Fazr",
+			"bn": "ফজর"
+		},
+		"sunrise": {
+			"en": "Sunrise",
+			"bn": "সূর্যোদয়"
+		},
+		"juhoor": {
+			"en": "Juhoor",
+			"bn": "জোহর"
+		},
+		"asr": {
+			"en": "Asr",
+			"bn": "আসর"
+		},
+		"magrib_iftar": {
+			"en": "Magrib/Iftar",
+			"bn": "মাগরিব/ইফতার"
+		},
+		"isha": {
+			"en": "Isha",
+			"bn": "ঈশা"
+		}
+	},
+	"months": {
+		"january": {
+			"en": "January",
+			"bn": "জানুয়ারি"
+		},
+		"february": {
+			"en": "February",
+			"bn": "ফেব্রুয়ারি"
+		},
+		"march": {
+			"en": "March",
+			"bn": "মার্চ"
+		},
+		"april": {
+			"en": "April",
+			"bn": "এপ্রিল"
+		},
+		"may": {
+			"en": "May",
+			"bn": "মে"
+		},
+		"june": {
+			"en": "June",
+			"bn": "জুন"
+		},
+		"july": {
+			"en": "July",
+			"bn": "জুলাই"
+		},
+		"august": {
+			"en": "August",
+			"bn": "আগস্ট"
+		},
+		"september": {
+			"en": "September",
+			"bn": "সেপ্টেম্বর"
+		},
+		"october": {
+			"en": "October",
+			"bn": "অক্টোবর"
+		},
+		"november": {
+			"en": "November",
+			"bn": "নভেম্বর"
+		},
+		"december": {
+			"en": "December",
+			"bn": "ডিসেম্বর"
+		}
+	},
+	"days": {
+		"sunday": {
+			"en": "Sunday",
+			"bn": "রবিবার"
+		},
+		"monday": {
+			"en": "Monday",
+			"bn": "সোমবার"
+		},
+		"tuesday": {
+			"en": "Tuesday",
+			"bn": "মঙ্গলবার"
+		},
+		"wednesday": {
+			"en": "Wednesday",
+			"bn": "বুধবার"
+		},
+		"thursday": {
+			"en": "Thursday",
+			"bn": "বৃহস্পতিবার"
+		},
+		"friday": {
+			"en": "Friday",
+			"bn": "শুক্রবার"
+		},
+		"saturday": {
+			"en": "Saturday",
+			"bn": "শনিবার"
+		}
+	},
+	"actions": {
+		"previous": {
+			"en": "Previous",
+			"bn": "পূর্ববর্তী"
+		},
+		"next": {
+			"en": "Next",
+			"bn": "পরবর্তী"
+		},
+		"update": {
+			"en": "Update",
+			"bn": "আপডেট"
+		},
+		"close": {
+			"en": "Close",
+			"bn": "বন্ধ করুন"
+		}
+	},
+	"footer": {
+		"made_with": {
+			"en": "Made with ❤️",
+			"bn": "ভালোবাসা সহ তৈরি"
+		},
+		"contact": {
+			"en": "Contact Us",
+			"bn": "যোগাযোগ করুন"
+		},
+		"about": {
+			"en": "About Us",
+			"bn": "আমাদের সম্পর্কে"
+		}
+	}
+}

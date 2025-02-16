@@ -17,7 +17,6 @@
 </script>
 
 <div class="w-full max-w-md mx-auto">
-	<label for="district" class="block text-lg font-medium text-gray-700">Select District:</label>
 	<select
 		id="district"
 		onchange={handleSelect}

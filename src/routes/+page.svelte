@@ -118,7 +118,7 @@
 	};
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
+<div class="min-h-screen  py-8 px-4">
 	<div class="max-w-7xl mx-auto">
 		<div class="text-center mb-8">
 			<SelectDistrict {districts} {updateDistrict} {selectedDistrict}></SelectDistrict>

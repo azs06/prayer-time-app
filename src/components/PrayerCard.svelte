@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Clock, Sun, Sunrise, Sunset, Moon } from 'lucide-svelte';
-	import lang from "../lang/lang.json"
+	import lang from '../lang/lang.json';
 	const defaultPrayerTimes = {
 		date: '',
 		sehri: '',
@@ -25,12 +25,20 @@
 			{ name: lang.prayerTime.isha.bn, time: prayerTime.isha, icon: Moon }
 		];
 	});
+	const todayBn = new Date().toLocaleDateString('bn');
 </script>
 
 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
 	<div class="bg-indigo-600 px-6 py-4">
 		<div class="flex items-center gap-2 text-white font-bold">
-			<Clock className="w-6 h-6" /> {lang.cardHeading.bn}
+			<div class="flex">
+				<Clock className="w-6 h-6" />
+				<span class="pl-4">{lang.cardHeading.bn}</span>
+			</div>
+
+			<div>
+				{todayBn}
+			</div>
 		</div>
 	</div>
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">

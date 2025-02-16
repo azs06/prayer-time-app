@@ -2,6 +2,7 @@
 	import PrayerCard from '../components/PrayerCard.svelte';
 	import SelectDistrict from '../components/SelectDistrict.svelte';
 	import { page } from '$app/state';
+	import lang from '../lang/lang.json';
 
 	const today = new Date();
 	const year = today.getFullYear();
@@ -48,7 +49,7 @@
 		date.setHours(hour);
 		date.setMinutes(minute + minutes);
 
-		return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+		return date.toLocaleTimeString('bn', { hour: 'numeric', minute: 'numeric', hour12: true });
 	};
 
 	const getTodaysPrayerTimes = () => {
@@ -113,9 +114,14 @@
 				return time;
 		}
 	};
+
+	const getTranslatedMonthName = (monthName) => {
+		const lowerCaseMonthName = monthName.toLowerCase();
+		return lang?.months[lowerCaseMonthName]?.bn;
+	};
 </script>
 
-<div class="min-h-screen  py-8 px-4">
+<div class="min-h-screen py-8 px-4">
 	<div class="max-w-7xl mx-auto">
 		<div class="text-center mb-8">
 			<SelectDistrict {districts} {updateDistrict} {selectedDistrict}></SelectDistrict>
@@ -133,7 +139,7 @@
 						selectedMonth?.monthName === month.monthName
 							? 'bg-indigo-600 text-white'
 							: 'bg-white text-gray-700 hover:bg-indigo-50'
-					}`}>{month.monthName}</button
+					}`}>{getTranslatedMonthName(month.monthName)}</button
 					>
 				{/each}
 			</div>
@@ -144,37 +150,36 @@
 				<table class="w-full">
 					<thead>
 						<tr class="bg-indigo-600 text-white">
-							<th class="px-4 py-3 text-left">Date</th>
-							<th class="px-4 py-3 text-left">Sehri</th>
-							<th class="px-4 py-3 text-left">Fazr</th>
-							<th class="px-4 py-3 text-left">Sunrise</th>
-							<th class="px-4 py-3 text-left">Juhoor</th>
-							<th class="px-4 py-3 text-left">Asr</th>
-							<th class="px-4 py-3 text-left">Magrib/Iftar</th>
-							<th class="px-4 py-3 text-left">Isha</th>
+							<th class="px-4 py-3 text-left">{lang.date.bn}</th>
+							<th class="px-4 py-3 text-left">{lang.prayerTime.sehri.bn}</th>
+							<th class="px-4 py-3 text-left">{lang.prayerTime.fazr.bn}</th>
+							<th class="px-4 py-3 text-left">{lang.prayerTime.sunrise.bn}</th>
+							<th class="px-4 py-3 text-left">{lang.prayerTime.juhoor.bn}</th>
+							<th class="px-4 py-3 text-left">{lang.prayerTime.asr.bn}</th>
+							<th class="px-4 py-3 text-left">{lang.prayerTime.magrib_iftar.bn}</th>
+							<th class="px-4 py-3 text-left">{lang.prayerTime.isha.bn}</th>
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-gray-200">
 						{#each selectedMonth?.schedules as time}
 							<tr
-								class="hover:bg-blue-600 hover:text-white hover:cursor-pointer transition-colors {isActiveDate(time, selectedMonth)
+								class="hover:bg-blue-600 hover:text-white hover:cursor-pointer transition-colors {isActiveDate(
+									time,
+									selectedMonth
+								)
 									? 'bg-blue-600 text-white active'
 									: 'text-gray-900'}"
 							>
-								<td class="px-4 py-3 font-medium ">
+								<td class="px-4 py-3 font-medium">
 									{time.date}
-									{selectedMonth?.monthName}
+									{getTranslatedMonthName(selectedMonth?.monthName)}
 								</td>
 								<td class="px-4 py-3">{renderAdjustedTime(time.sehri, 'sehri')}</td>
 								<td class="px-4 py-3">{renderAdjustedTime(time.fazr, 'fazr')}</td>
-								<td class="px-4 py-3"
-									>{renderAdjustedTime(time.sunrise, 'sunrise')}</td
-								>
+								<td class="px-4 py-3">{renderAdjustedTime(time.sunrise, 'sunrise')}</td>
 								<td class="px-4 py-3">{renderAdjustedTime(time.juhoor, 'juhoor')}</td>
 								<td class="px-4 py-3">{renderAdjustedTime(time.asr, 'asr')}</td>
-								<td class="px-4 py-3"
-									>{renderAdjustedTime(time.magrib_iftar, 'magrib_iftar')}</td
-								>
+								<td class="px-4 py-3">{renderAdjustedTime(time.magrib_iftar, 'magrib_iftar')}</td>
 								<td class="px-4 py-3">{renderAdjustedTime(time.isha, 'isha')}</td>
 							</tr>
 						{/each}

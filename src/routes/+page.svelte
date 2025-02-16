@@ -54,32 +54,22 @@
 		return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 	};
 
-	/* let todaysPrayerTimes = $derived.by(() => {
-		let prayerTime;
-		const date = new Date().getDate();
-		if (selectedMonth() && selectedMonth().schedules) {
-			prayerTime = selectedMonth().schedules.find((sch) => sch.date == date);
-			if (selectedDistrict !== null) {
-				const adjustments = selectedDistrict?.adjustments;
-				if (adjustments) {
-					const sehri = adjustTime(prayerTime.sehri, adjustments.suhoor);
-					const magrib_iftar = adjustTime(prayerTime.magrib_iftar, adjustments.iftar);
-					const asor = adjustTime(prayerTime.asor, adjustments.suhoor);
-					const sunrise = adjustTime(prayerTime.sunrise, adjustments.suhoor);
-					const isha = adjustTime(prayerTime.isha, adjustments.magrib_iftar);
-					prayerTime = {
-						...prayerTime,
-						sehri,
-						magrib_iftar,
-						sunrise,
-						asor,
-						isha
-					};
-				}
-			}
+	const getTodaysPrayerTimes = () => {
+		const { adjustments } = selectedDistrict;
+		const { schedules } = selectedMonth;
+		const today = new Date().getDate();
+		const prayerTime = schedules?.find((schedule) => {
+			return today == schedule.date;
+		});
+		if (prayerTime) {
+			let adjustedPrayerTime = {};
+			Object.keys(prayerTime).forEach((key) => {
+				adjustedPrayerTime[key] = renderAdjustedTime(prayerTime[key], key);
+			});
+			return adjustedPrayerTime;
 		}
-		return prayerTime;
-	}); */
+		return;
+	};
 
 	$effect(() => {
 		setSelectedMonth(calendar[new Date().getMonth()]);
@@ -105,6 +95,27 @@
 		);
 		return currentDate == activeDate;
 	};
+	const renderAdjustedTime = (time, timeOf) => {
+		const { adjustments } = selectedDistrict;
+		switch (timeOf) {
+			case 'sehri':
+				return adjustTime(time, adjustments.suhoor);
+			case 'fazr':
+				return adjustTime(time, adjustments.suhoor);
+			case 'sunrise':
+				return adjustTime(time, adjustments.suhoor);
+			case 'juhoor':
+				return adjustTime(time, adjustments.suhoor);
+			case 'asr':
+				return adjustTime(time, adjustments.suhoor);
+			case 'magrib_iftar':
+				return adjustTime(time, adjustments.iftar);
+			case 'isha':
+				return adjustTime(time, adjustments.iftar);
+			default:
+				return time;
+		}
+	};
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8 px-4">
@@ -113,7 +124,7 @@
 			<SelectDistrict {districts} {updateDistrict} {selectedDistrict}></SelectDistrict>
 		</div>
 		<div class="text-center mb-8">
-			<!-- <PrayerCard prayerTime={todaysPrayerTimes}></PrayerCard> -->
+			<PrayerCard prayerTime={getTodaysPrayerTimes()}></PrayerCard>
 		</div>
 		<div class="text-center mb-8">
 			<h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
@@ -152,21 +163,25 @@
 					<tbody class="divide-y divide-gray-200">
 						{#each selectedMonth?.schedules as time}
 							<tr
-								class="hover:bg-gray-50 transition-colors {isActiveDate(time, selectedMonth)
-									? 'bg-blue-600 text-white'
-									: ''}"
+								class="hover:bg-blue-600 hover:text-white hover:cursor-pointer transition-colors {isActiveDate(time, selectedMonth)
+									? 'bg-blue-600 text-white active'
+									: 'text-gray-900'}"
 							>
-								<td class="px-4 py-3 font-medium text-gray-900">
+								<td class="px-4 py-3 font-medium ">
 									{time.date}
 									{selectedMonth?.monthName}
 								</td>
-								<td class="px-4 py-3 text-gray-700">{time.sehri}</td>
-								<td class="px-4 py-3 text-gray-700">{time.fazr}</td>
-								<td class="px-4 py-3 text-gray-700">{time.sunrise}</td>
-								<td class="px-4 py-3 text-gray-700">{time.juhoor}</td>
-								<td class="px-4 py-3 text-gray-700">{time.asr}</td>
-								<td class="px-4 py-3 text-gray-700">{time.magrib_iftar}</td>
-								<td class="px-4 py-3 text-gray-700">{time.isha}</td>
+								<td class="px-4 py-3">{renderAdjustedTime(time.sehri, 'sehri')}</td>
+								<td class="px-4 py-3">{renderAdjustedTime(time.fazr, 'fazr')}</td>
+								<td class="px-4 py-3"
+									>{renderAdjustedTime(time.sunrise, 'sunrise')}</td
+								>
+								<td class="px-4 py-3">{renderAdjustedTime(time.juhoor, 'juhoor')}</td>
+								<td class="px-4 py-3">{renderAdjustedTime(time.asr, 'asr')}</td>
+								<td class="px-4 py-3"
+									>{renderAdjustedTime(time.magrib_iftar, 'magrib_iftar')}</td
+								>
+								<td class="px-4 py-3">{renderAdjustedTime(time.isha, 'isha')}</td>
 							</tr>
 						{/each}
 					</tbody>
